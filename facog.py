@@ -23,7 +23,7 @@ def main(): #Main game
         player_input = input()      #This is where the player can choose to use the items in the inventory or go to the shop or etc
         
         if player_input == "Shop":
-            print("Shop test worked yipee")
+            inventory, gold = shop_mechanic(inventory, gold)
         elif player_input .isdigit():
             intplayer_input = int(player_input)     #made a new player input varaible specifically to convert the given strings to integers (e.g, "123" -> 123)
             if intplayer_input < 0 or intplayer_input >= len(inventory):
@@ -53,9 +53,27 @@ def use_item(player_input, inventory, current_health):  #Once called, this funct
     inventory.pop(player_input)     #Once the function is completed it will delete the chosen item, preventing it from being used again
     return inventory, new_health    #Returns the updated player data to the caller
 
-def shop_mechanic(player_input, inventory):
-    pass #add mechanic later here
+def shop_mechanic(inventory, gold):     # Shop mechanic implemented, just add more codes later
 
+    shop_inventory = ["Sword", "Apple", "Pudding", "Bandage"]
+    print("Hello traveler, choose your item:    ",shop_inventory)
+    
+    shop_input = int(input())
+    chosen_item = shop_inventory[shop_input]
+
+    SwordCost = 100
+    AppleCost = 5
+    PuddingCost = 15
+    BandageCost = 10
+
+    if chosen_item == "Sword":
+        print(f"Are you sure you wnat to buy {chosen_item} for {SwordCost}?")
+        sureinput = str(input())
+        if sureinput == "Y":
+            print(f"{chosen_item} bought")
+            inventory.append(chosen_item)
+            newgold = gold - SwordCost
+            return inventory, newgold
 
 main()
     

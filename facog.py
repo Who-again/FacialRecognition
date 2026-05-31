@@ -4,6 +4,7 @@
 
 # Pls enjoy.         //CodeRPG//
 
+
 weaponList = ["Sword"]
 consumableList = ["Health potion", "Bread", "Apple", "Pudding", "Bandage"]
 
@@ -71,7 +72,7 @@ def use_item(
         heal = 12
         new_health = current_health + heal
     elif chosen_item == "Bandage":
-        print("*You wrapped the bandage on your wound*")
+        print("*You wrap the bandage on your wound*")
         heal = 20
         new_health = current_health + heal
     else:
@@ -99,88 +100,35 @@ def shop_mechanic(
     shop_inventory = ["Sword", "Apple", "Pudding", "Bandage"]
     print("Hello traveler, choose your item:    ", shop_inventory)
 
-    SwordCost = 100
-    AppleCost = 5
-    PuddingCost = 15
-    BandageCost = 10
+    price_list = {"Sword": 100, "Apple": 5, "Pudding": 15, "Bandage": 10}
 
     shop_input = input()
 
     if shop_input.isdigit():
         intshop_input = int(shop_input)
-        chosen_item = shop_inventory[intshop_input]
+        if intshop_input < 0 or intshop_input >= len(shop_inventory):
+            print("out of range (Choose within 0 - Length of shop inventory)")
+            newgold = gold
+            inventory = inventory
+        else:
+            chosen_item = shop_inventory[intshop_input]
+            item_cost = price_list[chosen_item]
 
-        if chosen_item == "Sword":
-            print(f"Are you sure you want to buy {chosen_item} for {SwordCost}? Y/N")
+            print(f"Are you sure you would like to buy {chosen_item} for {item_cost}?")
             sureinput = str(input())
-
             if sureinput == "Y" or sureinput == "y":
-                if gold >= SwordCost:
-                    print(f"{chosen_item} bought")
+                if gold >= item_cost:
+                    print(f"{chosen_item} Purchased")
                     inventory.append(chosen_item)
-                    newgold = gold - SwordCost
+                    newgold = gold - item_cost
                 else:
-                    print("Get out of here you fool! (Ur too broke buddy)")
-                    inventory = inventory
-                    newgold = gold
-
-            elif sureinput == "N" or sureinput == "n":
-                print("Purchase canceled")
-                newgold = gold
-                inventory = inventory
-        elif chosen_item == "Apple":
-            print(f"Are you sure you want to buy {chosen_item} for {AppleCost}? Y/N")
-            sureinput = str(input())
-
-            if sureinput == "Y" or sureinput == "y":
-                if gold >= AppleCost:
-                    print(f"{chosen_item} bought")
-                    inventory.append(chosen_item)
-                    newgold = gold - AppleCost
-                else:
-                    print("Get out of here you fool! (Ur too broke buddy)")
-                    inventory = inventory
-                    newgold = gold
-
-            elif sureinput == "N" or sureinput == "n":
-                print("Purchase canceled")
-                newgold = gold
-                inventory = inventory
-        elif chosen_item == "Pudding":
-            print(f"Are you sure you want to buy {chosen_item} for {PuddingCost}? Y/N")
-            sureinput = str(input())
-
-            if sureinput == "Y" or sureinput == "y":
-                if gold >= PuddingCost:
-                    print(f"{chosen_item} bought")
-                    inventory.append(chosen_item)
-                    newgold = gold - PuddingCost
-                else:
-                    print("Get out of here you fool! (Ur too broke buddy)")
+                    print("Ur too broke buddy (fuck off peasant)")
                     inventory = inventory
                     newgold = gold
             elif sureinput == "N" or sureinput == "n":
-                print("Purchase canceled")
-                newgold = gold
+                print("Purchase canceled my kind sir (Probably some homeless smh)")
                 inventory = inventory
-        elif chosen_item == "Bandage":
-            print(f"Are you sure you want to buy {chosen_item} for {BandageCost}? Y/N")
-            sureinput = str(input())
-
-            if sureinput == "Y" or sureinput == "y":
-                if gold >= BandageCost:
-                    print(f"{chosen_item} bought")
-                    inventory.append(chosen_item)
-                    newgold = gold - BandageCost
-                else:
-                    print("Get out of here you fool! (Ur too broke buddy)")
-                    inventory = inventory
-                    newgold = gold
-
-            elif sureinput == "N" or sureinput == "n":
-                print("Purchase canceled")
                 newgold = gold
-                inventory = inventory
     else:
         print("Out of range")
         newgold = gold

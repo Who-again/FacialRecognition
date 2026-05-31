@@ -12,7 +12,7 @@ def main():  # Main game
     game_running = True  # Game can be switched to false which will stop the program if the user types in "Quit"
     inventory = ["Health potion", "Bread"]
     health = int(100)
-    gold = int(1000)
+    gold = int(150)
 
     print("Welcome to the market game thingy mejiggy i have no fucking clue")
     print(
@@ -48,25 +48,47 @@ def use_item(
     chosen_item = inventory[player_input]
 
     if chosen_item == "Health potion":
+        print("*You gulp it down* yummy")
         heal = 25
         new_health = current_health + heal
         print("Healed by:   ", heal)
     elif chosen_item == "Bread":
-        print("Why does it taste like dog shit wrapped in cat shit..")
-        damage = 5
-        new_health = current_health - damage
-        print("Damaged by   :", damage)
+        print("A bit stale but it will do i guess..")
+        heal = 5
+        new_health = current_health + heal
+        print("Damaged by   :", heal)
     elif chosen_item == "Sword":
         print(
-            "It's fragile.."
+            "It's dull.."
         )  # This is just a placeholder code, Sword scripts coming soon
-
+        new_health = current_health
+    elif chosen_item == "Apple":
+        print("*You eat the apple* crunchy")
+        heal = 5
+        new_health = current_health + heal
+    elif chosen_item == "Pudding":
+        print("Oo jiggly")
+        heal = 12
+        new_health = current_health + heal
+    elif chosen_item == "Bandage":
+        print("*You wrapped the bandage on your wound*")
+        heal = 20
+        new_health = current_health + heal
     else:
         print("Out of range")
+
         new_health = current_health
-    inventory.pop(
-        player_input
-    )  # Once the function is completed it will delete the chosen item, preventing it from being used again
+
+    if chosen_item in consumableList:
+        inventory.pop(
+            player_input
+        )  # Once the function is completed it will delete the chosen item, preventing it from being used again
+    elif chosen_item in weaponList:
+        inventory = inventory
+    else:
+        print("Item is not within a category")
+        inventory = inventory
+
     return inventory, new_health  # Returns the updated player data to the caller
 
 
@@ -90,9 +112,14 @@ def shop_mechanic(
         sureinput = str(input())
 
         if sureinput == "Y" or sureinput == "y":
-            print(f"{chosen_item} bought")
-            inventory.append(chosen_item)
-            newgold = gold - SwordCost
+            if gold >= SwordCost:
+                print(f"{chosen_item} bought")
+                inventory.append(chosen_item)
+                newgold = gold - SwordCost
+            else:
+                print("Get out of here you fool! (Ur too broke buddy)")
+                inventory = inventory
+                newgold = gold
 
         elif sureinput == "N" or sureinput == "n":
             print("Purchase canceled")
@@ -103,9 +130,14 @@ def shop_mechanic(
         sureinput = str(input())
 
         if sureinput == "Y" or sureinput == "y":
-            print(f"{chosen_item} bought")
-            inventory.append(chosen_item)
-            newgold = gold - AppleCost
+            if gold >= AppleCost:
+                print(f"{chosen_item} bought")
+                inventory.append(chosen_item)
+                newgold = gold - AppleCost
+            else:
+                print("Get out of here you fool! (Ur too broke buddy)")
+                inventory = inventory
+                newgold = gold
 
         elif sureinput == "N" or sureinput == "n":
             print("Purchase canceled")
@@ -116,10 +148,14 @@ def shop_mechanic(
         sureinput = str(input())
 
         if sureinput == "Y" or sureinput == "y":
-            print(f"{chosen_item} bought")
-            inventory.append(chosen_item)
-            newgold = gold - PuddingCost
-
+            if gold >= PuddingCost:
+                print(f"{chosen_item} bought")
+                inventory.append(chosen_item)
+                newgold = gold - PuddingCost
+            else:
+                print("Get out of here you fool! (Ur too broke buddy)")
+                inventory = inventory
+                newgold = gold
         elif sureinput == "N" or sureinput == "n":
             print("Purchase canceled")
             newgold = gold
@@ -129,9 +165,14 @@ def shop_mechanic(
         sureinput = str(input())
 
         if sureinput == "Y" or sureinput == "y":
-            print(f"{chosen_item} bought")
-            inventory.append(chosen_item)
-            newgold = gold - BandageCost
+            if gold >= BandageCost:
+                print(f"{chosen_item} bought")
+                inventory.append(chosen_item)
+                newgold = gold - BandageCost
+            else:
+                print("Get out of here you fool! (Ur too broke buddy)")
+                inventory = inventory
+                newgold = gold
 
         elif sureinput == "N" or sureinput == "n":
             print("Purchase canceled")

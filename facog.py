@@ -4,8 +4,6 @@
 
 # Pls enjoy.         //CodeRPG//
 
-import random
-
 
 def main():  # Main game
 
@@ -13,7 +11,7 @@ def main():  # Main game
     consumableList = ["Health potion", "Bread", "Apple", "Pudding", "Bandage"]
 
     game_running = True  # Game can be switched to false which will stop the program if the user types in "Quit"
-    inventory = ["Health potion", "Bread"]
+    inventory = ["Health potion", "Bread", "Sword"]
     health = int(100)
     gold = int(150)
 
@@ -149,27 +147,34 @@ def fight_mechanic(
     inventory, health, gold, weaponList
 ):  # issues here, weaponList category not detected in the player's inventory despite having a weapon
 
+    import random
+
     enemy = {"Goblin": 50, "Baby Goblin": 15}
-    startfight = str(input())
+    enemyarr = ["Goblin", "Baby Goblin"]
 
-    if weaponList in inventory:
-        if startfight == "Y" or startfight == "y":
-            print("yoo ur fighting")
-
-        elif startfight == "N" or startfight == "n":
-            print("Canceled (weakling)")
+    for weapon in weaponList:
+        if weapon in inventory:
+            print("Are you sure you want to fight? (holy ur buff man)")
+            startfight = str(input())
+            if startfight == "Y" or startfight == "y":
+                print("yoo ur fighting")
+                random_enemy = random.choice(enemyarr)
+                print(f"Theres a {random_enemy}!")
+                # add more codes here later
+            elif startfight == "N" or startfight == "n":
+                print("Canceled (weakling)")
+                inventory = inventory
+                health = health
+                gold = gold
+            else:
+                print("Out of range")
+        elif weapon not in inventory:
+            print("Buddy you can't fight without a weapon (lmao)")
             inventory = inventory
             health = health
             gold = gold
         else:
-            print("Out of range")
-    elif weaponList not in inventory:
-        print("Buddy you can't fight without a weapon (lmao)")
-        inventory = inventory
-        health = health
-        gold = gold
-    else:
-        print("Out of range (weirdo)")
+            print("Out of range (weirdo)")
 
     return inventory, health, gold
 

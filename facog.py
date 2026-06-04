@@ -7,11 +7,11 @@
 
 def main():  # Main game
 
-    weaponList = ["Sword"]
+    weaponList = ["Sword", "Axe"]
     consumableList = ["Health potion", "Bread", "Apple", "Pudding", "Bandage"]
 
     game_running = True  # Game can be switched to false which will stop the program if the user types in "Quit"
-    inventory = ["Health potion", "Bread", "Sword"]
+    inventory = ["Health potion", "Bread", "Axe"]
     health = int(100)
     gold = int(150)
 
@@ -33,6 +33,7 @@ def main():  # Main game
             intplayer_input = int(
                 player_input
             )  # made a new player input varaible specifically to convert the given strings to integers (e.g, "123" -> 123)
+
             if intplayer_input < 0 or intplayer_input >= len(inventory):
                 print("Out of range lil bro")
             else:
@@ -40,10 +41,12 @@ def main():  # Main game
                 inventory, health = use_item(
                     intplayer_input, inventory, health, weaponList, consumableList
                 )
+
         elif player_input == "Quit":
             print("Quitting")
             game_running = False
-        elif player_input == "Fight":
+
+        elif player_input == "Fight" or player_input == "fight":
             inventory, health, gold = fight_mechanic(
                 inventory, health, gold, weaponList
             )
@@ -67,7 +70,7 @@ def use_item(
     elif chosen_item == "Sword":
         print(
             "It's dull.."
-        )  # This is just a placeholder code, Sword scripts coming soon
+        )  # This is just a placeholder code, Sword scripts coming soon. EDIT: there's a fight mechanic now! :D
         new_health = current_health
     elif chosen_item == "Apple":
         print("*You eat the apple* crunchy")
@@ -99,9 +102,7 @@ def use_item(
     return inventory, new_health  # Returns the updated player data to the caller
 
 
-def shop_mechanic(
-    inventory, gold
-):  # Shop mechanic implemented, just add more codes later
+def shop_mechanic(inventory, gold):
 
     shop_inventory = ["Sword", "Apple", "Pudding", "Bandage"]
     print("Hello traveler, choose your item:    ", shop_inventory)
@@ -112,25 +113,29 @@ def shop_mechanic(
 
     if shop_input.isdigit():
         intshop_input = int(shop_input)
+
         if intshop_input < 0 or intshop_input >= len(shop_inventory):
             print("out of range (Choose within 0 - Length of shop inventory)")
             newgold = gold
             inventory = inventory
+
         else:
             chosen_item = shop_inventory[intshop_input]
             item_cost = price_list[chosen_item]
-
             print(f"Are you sure you would like to buy {chosen_item} for {item_cost}?")
             sureinput = str(input())
+
             if sureinput == "Y" or sureinput == "y":
                 if gold >= item_cost:
                     print(f"{chosen_item} Purchased")
                     inventory.append(chosen_item)
                     newgold = gold - item_cost
+
                 else:
                     print("Ur too broke buddy (fuck off peasant)")
                     inventory = inventory
                     newgold = gold
+
             elif sureinput == "N" or sureinput == "n":
                 print("Purchase canceled my kind sir (Probably some homeless smh)")
                 inventory = inventory
@@ -143,40 +148,105 @@ def shop_mechanic(
     return inventory, newgold
 
 
-def fight_mechanic(
-    inventory, health, gold, weaponList
-):  # issues here, weaponList category not detected in the player's inventory despite having a weapon
+def fight_mechanic(inventory, health, gold, weaponList):
 
     import random
 
+    player_hp = health
+    newgold = gold
+    inventory = inventory
+
     enemy = {"Goblin": 50, "Baby Goblin": 15}
     enemyarr = ["Goblin", "Baby Goblin"]
+    lootarr = {"Goblin": "Goblin Flesh", "Baby Goblin": "Goblin Eyes"}
+    goldarr = {"Goblin": 25, "Baby Goblin": 10}
 
     for weapon in weaponList:
+        has_weapon = False
         if weapon in inventory:
-            print("Are you sure you want to fight? (holy ur buff man)")
-            startfight = str(input())
-            if startfight == "Y" or startfight == "y":
-                print("yoo ur fighting")
-                random_enemy = random.choice(enemyarr)
-                print(f"Theres a {random_enemy}!")
-                # add more codes here later
-            elif startfight == "N" or startfight == "n":
-                print("Canceled (weakling)")
+            has_weapon = True
+            break
+        else:
+            has_weapon = False
+
+    if has_weapon:
+        print("Are you sure you want to fight? Y/N (holy ur buff man)")
+        startfight = str(input())
+
+        if startfight == "Y" or startfight == "y":
+            random_enemy = random.choice(enemyarr)
+            enemy_hp = enemy[random_enemy]
+
+            loot_drop = lootarr[random_enemy]
+            gold_drop = goldarr[random_enemy]
+
+            print(f"Theres a {random_enemy}!")
+            print(f"HP: {enemy_hp}")
+            print("Press 1 to attack or 0 to retreat")
+
+            while enemy_hp > 0 and player_hp > 0:
+                fight_input = input()
+                if fight_input.isdigit():
+                    intfight = int(fight_input)
+                    if intfight == 1:
+                        enemy_hp -= random.randint(5, 10)
+                        print(random_enemy, enemy_hp)
+                        inventory = inventory
+                        newgold = gold
+                        health = player_hp
+
+                    elif intfight == 0:
+                        print(
+                            f"You ran away! (imagine running away from a {random_enemy} lmao)"
+                        )
+                        inventory = inventory
+                        newgold = gold
+                        health = player_hp
+                        break
+                    else:
+                        print("Out of range (Buddy, just press 1 or 0 what's so hard)")
+                        inventory = inventory
+                        newgold = gold
+                        health = player_hp
+                else:
+                    print("Out of range (not a digit dummy)")
+                    inventory = inventory
+                    newgold = newgold
+                    health = player_hp
+
+            if enemy_hp <= 0:
+                print(f"You killed the {random_enemy}!")
+                inventory.append(loot_drop)
+                newgold = gold + gold_drop
+                health = player_hp
+
+                print(f"You got:    {loot_drop} and {gold_drop} Gold")
+
+            elif player_hp <= 0:
+                print(f"you died bro imagine dying to a {random_enemy} xD")
                 inventory = inventory
-                health = health
-                gold = gold
-            else:
-                print("Out of range")
-        elif weapon not in inventory:
-            print("Buddy you can't fight without a weapon (lmao)")
+                newgold = gold
+                health = player_hp
+
+        elif startfight == "N" or startfight == "n":
+            print("Canceled (weakling)")
             inventory = inventory
             health = health
-            gold = gold
-        else:
-            print("Out of range (weirdo)")
+            newgold = gold
 
-    return inventory, health, gold
+        else:
+            print("Out of range")
+
+    elif not has_weapon:
+        print("Buddy you can't fight without a weapon (lmao)")
+        inventory = inventory
+        health = player_hp
+        newgold = gold
+
+    else:
+        print("Out of range (weirdo)")
+
+    return inventory, player_hp, newgold
 
 
 main()

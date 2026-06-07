@@ -45,10 +45,6 @@ def main():  # Main game
 
     inventory, health, gold = load_game()
 
-    # inventory = ["Health potion", "Bread", "Axe", "Goblin Flesh", "Goblin Eyes"]
-    # health = int(100)
-    # gold = int(150)
-
     print("Welcome to the market game thingy mejiggy i have no fucking clue")
     print(
         "Choose what you want to use Numbers only, starts from 0, type in Shop to enter Shop"
@@ -126,10 +122,9 @@ def use_item(
             player_input
         )  # Once the function is completed it will delete the chosen item, preventing it from being used again
     elif chosen_item in weaponList:
-        inventory = inventory
+        pass
     else:
         print("Item is not within a category")
-        inventory = inventory
 
     if new_health > 100:
         new_health = 100
@@ -198,11 +193,10 @@ def fight_mechanic(inventory, health, gold, weaponList, consumableList):
 
     import random
 
-    enemy = {"Goblin": 50, "Baby Goblin": 15}
-    enemyarr = ["Goblin", "Baby Goblin"]
-    lootarr = {"Goblin": "Goblin Flesh", "Baby Goblin": "Goblin Eyes"}
-    goldarr = {"Goblin": 25, "Baby Goblin": 10}
-    dmgarr = {"Goblin": 15, "Baby Goblin": 5}
+    enemy = {
+        "Goblin": {"hp": 50, "loot": "Goblin Flesh", "gold": 25, "dmg": 15},
+        "Baby Goblin": {"hp": 15, "loot": "Goblin Eyes", "gold": 10, "dmg": 5},
+    }
 
     enemy_rng = 20  # This is the miss chance for the enemy when they fight back, for now this applies to every enemies but will soon be changed
 
@@ -219,12 +213,12 @@ def fight_mechanic(inventory, health, gold, weaponList, consumableList):
         startfight = str(input())
 
         if startfight == "Y" or startfight == "y":
-            random_enemy = random.choice(enemyarr)
-            enemy_hp = enemy[random_enemy]
-            enemy_dmg = dmgarr[random_enemy]
+            random_enemy = random.choice(list(enemy.keys()))
+            enemy_hp = enemy[random_enemy]["hp"]
+            enemy_dmg = enemy[random_enemy]["dmg"]
 
-            loot_drop = lootarr[random_enemy]
-            gold_drop = goldarr[random_enemy]
+            loot_drop = enemy[random_enemy]["loot"]
+            gold_drop = enemy[random_enemy]["gold"]
 
             print(f"Theres a {random_enemy}!")
             print(f"HP: {enemy_hp}")
@@ -271,7 +265,6 @@ def fight_mechanic(inventory, health, gold, weaponList, consumableList):
                         print(
                             f"You ran away! (imagine running away from a {random_enemy} lmao)"
                         )
-                        health = health
                         break
                     else:
                         print("Out of range (Buddy, just press 1 or 0 what's so hard)")
@@ -283,13 +276,11 @@ def fight_mechanic(inventory, health, gold, weaponList, consumableList):
                 print(f"You killed the {random_enemy}!")
                 inventory.append(loot_drop)
                 gold += gold_drop
-                health = health
 
                 print(f"You got:    {loot_drop} and {gold_drop} Gold")
 
             elif health <= 0:
                 print(f"you died bro imagine dying to a {random_enemy} xD")
-                health = health
 
         elif startfight == "N" or startfight == "n":
             print("Canceled (weakling)")

@@ -3,6 +3,36 @@
 # I will also be implementing the things i have learnt from Harvard's CS50p course
 
 # Pls enjoy.         //CodeRPG//
+import json
+
+
+def load_game():  # took me a few hours to learn these JSON stuff, war is over boys YOOHOOOOOOOO
+    try:
+        with open("player_data.json", "r") as file:
+            loaded_data = json.load(file)
+            return loaded_data["inventory"], loaded_data["health"], loaded_data["gold"]
+    except FileNotFoundError:  # By default, if there's no player data the program will generate one for you and give you the standard kit
+        print("No player data, generating..")
+
+        default_data = {
+            "inventory": ["Bread", "Health Potion"],
+            "health": 100,
+            "gold": 150,
+        }
+
+        with open("player_data.json", "w") as file:
+            json.dump(default_data, file, indent=4)
+            print("Generated!")
+
+        return ["Bread", "Health Potion"], 100, 150
+
+
+def save_game(inventory, health, gold):
+    save_list = {"inventory": inventory, "health": health, "gold": gold}
+
+    with open("player_data.json", "w") as file:
+        json.dump(save_list, file, indent=4)
+        print("Saving...")
 
 
 def main():  # Main game
@@ -12,9 +42,12 @@ def main():  # Main game
     # pls add one more category for selling items, i recently added goblin flesh and goblin eyes as lootdrop, i might just create like a valuable category that i can use to sell stuff
 
     game_running = True  # Game can be switched to false which will stop the program if the user types in "Quit"
-    inventory = ["Health potion", "Bread", "Axe", "Goblin Flesh", "Goblin Eyes"]
-    health = int(100)
-    gold = int(150)
+
+    inventory, health, gold = load_game()
+
+    # inventory = ["Health potion", "Bread", "Axe", "Goblin Flesh", "Goblin Eyes"]
+    # health = int(100)
+    # gold = int(150)
 
     print("Welcome to the market game thingy mejiggy i have no fucking clue")
     print(
@@ -45,6 +78,7 @@ def main():  # Main game
 
         elif player_input == "Quit":
             print("Quitting")
+            save_game(inventory, health, gold)
             game_running = False
 
         elif player_input == "Fight" or player_input == "fight":
@@ -214,20 +248,25 @@ def fight_mechanic(inventory, health, gold, weaponList, consumableList):
                                 print(f"You:    {health}")
                     elif intfight == 2:
                         print(inventory)
-                        intplayer_input = int(input())
-                        if intplayer_input < 0 or intplayer_input >= len(inventory):
-                            print("Out of range lil bro")
+                        player_input = input()
+                        if player_input.isdigit:
+                            intplayer_input = int(player_input)
+                            if intplayer_input < 0 or intplayer_input >= len(inventory):
+                                print("Out of range lil bro")
+                            else:
+                                print(inventory[intplayer_input])
+                                inventory, health = use_item(
+                                    intplayer_input,
+                                    inventory,
+                                    health,
+                                    weaponList,
+                                    consumableList,
+                                )
+                                print("Health:  ", health)
                         else:
-                            print(inventory[intplayer_input])
-                            inventory, health = use_item(
-                                intplayer_input,
-                                inventory,
-                                health,
-                                weaponList,
-                                consumableList,
+                            print(
+                                "Out of range (must be a number how tf have you not learnt by now)"
                             )
-                            print("Health:  ", health)
-
                     elif intfight == 0:
                         print(
                             f"You ran away! (imagine running away from a {random_enemy} lmao)"
